@@ -1,4 +1,7 @@
 Create 
+- designs (folder)
+    - html mockups of idea
+    - png screen shot images of mock ups
 - Api .NET Web (src\ReverseProxy.Api)
 - ApiGateway .NET Web (src\ReverseProxy.ApiGateway)
 - Angular Workspace (v21) (src\ReverseProxy.Workspace)
@@ -37,5 +40,7 @@ Details
         - Name
         - Value (number or enum)
         - Utc
-    - Seed data so that solution is turn key. On start up, charts have data updating, graphs have data flowing                
+    - Seed data so that solution is turn key. On start up, charts have data updating, graphs have data flowing
+    - Readme explaining project in root
+              
 
