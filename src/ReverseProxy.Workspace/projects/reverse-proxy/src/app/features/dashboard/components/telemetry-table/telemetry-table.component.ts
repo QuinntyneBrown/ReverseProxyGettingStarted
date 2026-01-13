@@ -28,21 +28,20 @@ interface TelemetryRow {
 }
 
 @Component({
-  selector: 'app-telemetry-table',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatSortModule,
-    MatPaginatorModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatCardModule,
-    MatIconModule,
-    MatButtonModule,
-    FormsModule,
-  ],
-  template: `
+    selector: 'app-telemetry-table',
+    imports: [
+        CommonModule,
+        MatTableModule,
+        MatSortModule,
+        MatPaginatorModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatCardModule,
+        MatIconModule,
+        MatButtonModule,
+        FormsModule,
+    ],
+    template: `
     <mat-card class="telemetry-table-card">
       <mat-card-header>
         <mat-card-title>
@@ -102,8 +101,8 @@ interface TelemetryRow {
       </mat-card-content>
     </mat-card>
   `,
-  styles: [
-    `
+    styles: [
+        `
       .telemetry-table-card {
         height: 100%;
         display: flex;
@@ -155,7 +154,7 @@ interface TelemetryRow {
         background: transparent;
       }
     `,
-  ],
+    ]
 })
 export class TelemetryTableComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort) sort!: MatSort;

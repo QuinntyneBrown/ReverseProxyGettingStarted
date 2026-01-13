@@ -7,7 +7,7 @@ import {
   Input,
   AfterViewInit,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -21,17 +21,15 @@ import { TelemetryDataPoint } from '../../../../core/models/telemetry.model';
 Chart.register(...registerables);
 
 @Component({
-  selector: 'app-telemetry-chart',
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: 'app-telemetry-chart',
+    imports: [
     MatCardModule,
     MatSelectModule,
     MatFormFieldModule,
     MatIconModule,
-    FormsModule,
-  ],
-  template: `
+    FormsModule
+],
+    template: `
     <mat-card class="chart-card">
       <mat-card-header>
         <mat-card-title>
@@ -57,8 +55,8 @@ Chart.register(...registerables);
       </mat-card-content>
     </mat-card>
   `,
-  styles: [
-    `
+    styles: [
+        `
       .chart-card {
         height: 100%;
         display: flex;
@@ -104,7 +102,7 @@ Chart.register(...registerables);
         height: 100% !important;
       }
     `,
-  ],
+    ]
 })
 export class TelemetryChartComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('chartCanvas') chartCanvas!: ElementRef<HTMLCanvasElement>;

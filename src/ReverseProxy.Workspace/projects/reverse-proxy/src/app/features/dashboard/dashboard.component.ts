@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,19 +12,17 @@ import { TelemetryTableComponent } from './components/telemetry-table/telemetry-
 import { TelemetryChartComponent } from './components/telemetry-chart/telemetry-chart.component';
 
 @Component({
-  selector: 'app-dashboard',
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: 'app-dashboard',
+    imports: [
     MatSidenavModule,
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
     MatChipsModule,
     TelemetryTableComponent,
-    TelemetryChartComponent,
-  ],
-  template: `
+    TelemetryChartComponent
+],
+    template: `
     <div class="dashboard-layout">
       <mat-toolbar color="primary" class="dashboard-toolbar">
         <mat-icon>dashboard</mat-icon>
@@ -84,8 +82,8 @@ import { TelemetryChartComponent } from './components/telemetry-chart/telemetry-
       </div>
     </div>
   `,
-  styles: [
-    `
+    styles: [
+        `
       .dashboard-layout {
         height: 100vh;
         display: flex;
@@ -167,7 +165,7 @@ import { TelemetryChartComponent } from './components/telemetry-chart/telemetry-
         }
       }
     `,
-  ],
+    ]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   connectionState = 'Disconnected';
