@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GridStack Dashboard Mockup - Resizable/Moveable Widgets</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gridstack.js/10.0.0/gridstack.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #121212;
+            color: rgba(255, 255, 255, 0.87);
+            min-height: 100vh;
+        }
+
+        .toolbar {
+            background: #1e1e1e;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .toolbar h1 {
+            font-size: 20px;
+            font-weight: 400;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toolbar-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .connection-status {
+            background: #4caf50;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 16px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .grid-stack {
+            padding: 16px;
+            min-height: calc(100vh - 68px);
+        }
+
+        .grid-stack-item-content {
+            background: #1e1e1e;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .widget-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: move;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .widget-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .widget-content {
+            flex: 1;
+            padding: 16px;
+            overflow: auto;
+        }
+
+        /* Resize handles */
+        .gs-resizable > .ui-resizable-se {
+            background: transparent;
+            bottom: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+        }
+
+        .gs-resizable > .ui-resizable-se::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 12px;
+            height: 12px;
+            border-right: 2px solid rgba(255, 255, 255, 0.3);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th, td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        th {
+            font-weight: 500;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .value {
+            font-family: 'Roboto Mono', monospace;
+            color: #4caf50;
+        }
+
+        /* Chart placeholder */
+        .chart-area {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-svg {
+            flex: 1;
+            width: 100%;
+        }
+
+        .chart-line {
+            fill: none;
+            stroke: #4caf50;
+            stroke-width: 2;
+        }
+
+        .chart-area-fill {
+            fill: rgba(76, 175, 80, 0.1);
+        }
+
+        .chart-grid {
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 1;
+        }
+
+        /* Info box */
+        .info-box {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .info-value {
+            font-size: 48px;
+            font-weight: 300;
+            color: #4caf50;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 8px;
+        }
+
+        .info-unit {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .material-icons {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Grid indicator overlay */
+        .grid-indicator {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <h1>
+            <span class="material-icons">dashboard</span>
+            Telemetry Dashboard - GridStack Layout
+        </h1>
+        <div class="toolbar-actions">
+            <button class="icon-btn" title="Add Widget">
+                <span class="material-icons">add</span>
+            </button>
+            <button class="icon-btn" title="Reset Layout">
+                <span class="material-icons">restart_alt</span>
+            </button>
+            <button class="icon-btn" title="Lock Layout">
+                <span class="material-icons">lock_open</span>
+            </button>
+        </div>
+        <div class="connection-status">
+            <span class="material-icons" style="font-size: 16px;">wifi</span>
+            Connected
+        </div>
+    </div>
+
+    <div class="grid-stack">
+        <!-- Widget 1: Large Table (spans 5 columns, 2 rows) -->
+        <div class="grid-stack-item" gs-x="0" gs-y="0" gs-w="5" gs-h="20">
+            <div class="grid-stack-item-content">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <span class="material-icons">table_chart</span>
+                        Telemetry Table
+                    </div>
+                    <span class="grid-indicator">5x20</span>
+                </div>
+                <div class="widget-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Value</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Speed</td><td class="value">45.50</td><td>14:32:45</td></tr>
+                            <tr><td>Temperature</td><td class="value">72.30</td><td>14:32:45</td></tr>
+                            <tr><td>Voltage</td><td class="value">47.80</td><td>14:32:45</td></tr>
+                            <tr><td>JointPressure</td><td class="value">125.40</td><td>14:32:45</td></tr>
+                            <tr><td>Power</td><td class="value">1250.00</td><td>14:32:45</td></tr>
+                            <tr><td>RPM</td><td class="value">4500</td><td>14:32:45</td></tr>
+                            <tr><td>BatteryLevel</td><td class="value">85.00</td><td>14:32:45</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Widget 2: Speed Chart -->
+        <div class="grid-stack-item" gs-x="5" gs-y="0" gs-w="5" gs-h="10">
+            <div class="grid-stack-item-content">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <span class="material-icons">show_chart</span>
+                        Speed
+                    </div>
+                    <span class="grid-indicator">5x10</span>
+                </div>
+                <div class="widget-content">
+                    <div class="chart-area">
+                        <svg class="chart-svg" viewBox="0 0 400 150" preserveAspectRatio="none">
+                            <line class="chart-grid" x1="0" y1="37" x2="400" y2="37"/>
+                            <line class="chart-grid" x1="0" y1="75" x2="400" y2="75"/>
+                            <line class="chart-grid" x1="0" y1="112" x2="400" y2="112"/>
+                            <path class="chart-area-fill" d="M0,130 Q50,110 100,90 T200,60 T300,50 T400,30 L400,150 L0,150 Z"/>
+                            <path class="chart-line" d="M0,130 Q50,110 100,90 T200,60 T300,50 T400,30"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Widget 3: Temperature Chart -->
+        <div class="grid-stack-item" gs-x="5" gs-y="10" gs-w="5" gs-h="10">
+            <div class="grid-stack-item-content">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <span class="material-icons">show_chart</span>
+                        Temperature
+                    </div>
+                    <span class="grid-indicator">5x10</span>
+                </div>
+                <div class="widget-content">
+                    <div class="chart-area">
+                        <svg class="chart-svg" viewBox="0 0 400 150" preserveAspectRatio="none">
+                            <line class="chart-grid" x1="0" y1="37" x2="400" y2="37"/>
+                            <line class="chart-grid" x1="0" y1="75" x2="400" y2="75"/>
+                            <line class="chart-grid" x1="0" y1="112" x2="400" y2="112"/>
+                            <path class="chart-area-fill" d="M0,100 Q50,80 100,110 T200,70 T300,90 T400,50 L400,150 L0,150 Z"/>
+                            <path class="chart-line" d="M0,100 Q50,80 100,110 T200,70 T300,90 T400,50"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Widget 4: Speed Value Box -->
+        <div class="grid-stack-item" gs-x="0" gs-y="20" gs-w="2" gs-h="8">
+            <div class="grid-stack-item-content">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <span class="material-icons">speed</span>
+                        Speed
+                    </div>
+                    <span class="grid-indicator">2x8</span>
+                </div>
+                <div class="widget-content">
+                    <div class="info-box">
+                        <div class="info-value">45.5</div>
+                        <div class="info-unit">m/s</div>
+                        <div class="info-label">Current Speed</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Widget 5: Battery Level Box -->
+        <div class="grid-stack-item" gs-x="2" gs-y="20" gs-w="2" gs-h="8">
+            <div class="grid-stack-item-content">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <span class="material-icons">battery_charging_full</span>
+                        Battery
+                    </div>
+                    <span class="grid-indicator">2x8</span>
+                </div>
+                <div class="widget-content">
+                    <div class="info-box">
+                        <div class="info-value">85</div>
+                        <div class="info-unit">%</div>
+                        <div class="info-label">Battery Level</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Widget 6: Status Box -->
+        <div class="grid-stack-item" gs-x="4" gs-y="20" gs-w="2" gs-h="8">
+            <div class="grid-stack-item-content">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <span class="material-icons">power_settings_new</span>
+                        Status
+                    </div>
+                    <span class="grid-indicator">2x8</span>
+                </div>
+                <div class="widget-content">
+                    <div class="info-box">
+                        <div class="info-value" style="color: #4caf50; font-size: 24px;">RUNNING</div>
+                        <div class="info-label">Vehicle Status</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Widget 7: Voltage Chart -->
+        <div class="grid-stack-item" gs-x="6" gs-y="20" gs-w="4" gs-h="8">
+            <div class="grid-stack-item-content">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <span class="material-icons">bolt</span>
+                        Voltage
+                    </div>
+                    <span class="grid-indicator">4x8</span>
+                </div>
+                <div class="widget-content">
+                    <div class="chart-area">
+                        <svg class="chart-svg" viewBox="0 0 400 100" preserveAspectRatio="none">
+                            <line class="chart-grid" x1="0" y1="25" x2="400" y2="25"/>
+                            <line class="chart-grid" x1="0" y1="50" x2="400" y2="50"/>
+                            <line class="chart-grid" x1="0" y1="75" x2="400" y2="75"/>
+                            <path class="chart-area-fill" d="M0,60 Q50,55 100,65 T200,50 T300,55 T400,45 L400,100 L0,100 Z"/>
+                            <path class="chart-line" d="M0,60 Q50,55 100,65 T200,50 T300,55 T400,45"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gridstack.js/10.0.0/gridstack-all.min.js"></script>
+    <script>
+        // Initialize GridStack (for demo purposes)
+        document.addEventListener('DOMContentLoaded', function() {
+            var grid = GridStack.init({
+                column: 10,
+                cellHeight: 20,
+                margin: 8,
+                float: true,
+                resizable: {
+                    handles: 'e,se,s,sw,w'
+                },
+                draggable: {
+                    handle: '.widget-header'
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+@use '@angular/material' as mat;
+
+// Dark theme palette
+$dark-primary: mat.m2-define-palette(mat.$m2-indigo-palette, 400);
+$dark-accent: mat.m2-define-palette(mat.$m2-green-palette, A200);
+$dark-warn: mat.m2-define-palette(mat.$m2-red-palette);
+
+$dark-theme: mat.m2-define-dark-theme((
+  color: (
+    primary: $dark-primary,
+    accent: $dark-accent,
+    warn: $dark-warn,
+  ),
+  typography: mat.m2-define-typography-config(),
+  density: 0,
+));
+
+@include mat.all-component-themes($dark-theme);
+
+// Global styles
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  background-color: #121212;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+// Custom scrollbar for dark theme
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #424242;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #616161;
+}
+
+// Material overrides for dark theme
+.mat-mdc-card {
+  --mat-card-elevated-container-color: #1e1e1e;
+}
+
+.mat-mdc-table {
+  background: transparent !important;
+}
+
+.mat-mdc-header-row {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.mat-mdc-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+// Gridstack styles
+@import 'gridstack/dist/gridstack.min.css';
+
+.grid-stack {
+  background: transparent;
+}
+
+.grid-stack-item-content {
+  background: #1e1e1e;
+  border-radius: 8px;
+  overflow: hidden;
+}

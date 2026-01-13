@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telemetry Dashboard Mockup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #121212;
+            color: rgba(255, 255, 255, 0.87);
+            min-height: 100vh;
+        }
+
+        .toolbar {
+            background: #1e1e1e;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .toolbar h1 {
+            font-size: 20px;
+            font-weight: 400;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .connection-status {
+            background: #4caf50;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 16px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dashboard-content {
+            padding: 16px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 16px;
+            height: calc(100vh - 68px);
+        }
+
+        .card {
+            background: #1e1e1e;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .card-content {
+            flex: 1;
+            padding: 16px;
+            overflow: auto;
+        }
+
+        .table-widget {
+            grid-row: span 2;
+        }
+
+        /* Table Styles */
+        .filter-field {
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        .filter-field input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.23);
+            border-radius: 4px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .filter-field input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: 500;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        .value {
+            font-family: 'Roboto Mono', monospace;
+            color: #4caf50;
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        /* Chart Styles */
+        .chart-container {
+            flex: 1;
+            position: relative;
+        }
+
+        .chart-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .chart-line {
+            fill: none;
+            stroke: #4caf50;
+            stroke-width: 2;
+        }
+
+        .chart-area {
+            fill: rgba(76, 175, 80, 0.1);
+        }
+
+        .chart-grid {
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 1;
+        }
+
+        /* Select Dropdown */
+        .select-field {
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.23);
+            border-radius: 4px;
+            color: white;
+            font-size: 14px;
+            min-width: 150px;
+        }
+
+        .select-field option {
+            background: #1e1e1e;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1e1e1e;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #424242;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #616161;
+        }
+
+        .material-icons {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <h1>
+            <span class="material-icons">dashboard</span>
+            Telemetry Dashboard
+        </h1>
+        <div class="connection-status">
+            <span class="material-icons" style="font-size: 16px;">wifi</span>
+            Connected
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        <!-- Telemetry Table -->
+        <div class="card table-widget">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="material-icons">table_chart</span>
+                    Telemetry Data
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="filter-field">
+                    <input type="text" placeholder="Search telemetry...">
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Value</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Speed</td>
+                            <td class="value">45.50</td>
+                            <td>14:32:45.123</td>
+                        </tr>
+                        <tr>
+                            <td>Temperature</td>
+                            <td class="value">72.30</td>
+                            <td>14:32:45.123</td>
+                        </tr>
+                        <tr>
+                            <td>Voltage</td>
+                            <td class="value">47.80</td>
+                            <td>14:32:45.123</td>
+                        </tr>
+                        <tr>
+                            <td>JointPressure</td>
+                            <td class="value">125.40</td>
+                            <td>14:32:45.123</td>
+                        </tr>
+                        <tr>
+                            <td>Power</td>
+                            <td class="value">1250.00</td>
+                            <td>14:32:45.123</td>
+                        </tr>
+                        <tr>
+                            <td>RPM</td>
+                            <td class="value">4500</td>
+                            <td>14:32:45.123</td>
+                        </tr>
+                        <tr>
+                            <td>BatteryLevel</td>
+                            <td class="value">85.00</td>
+                            <td>14:32:45.123</td>
+                        </tr>
+                        <tr>
+                            <td>Current</td>
+                            <td class="value">26.10</td>
+                            <td>14:32:45.123</td>
+                        </tr>
+                        <tr>
+                            <td>Torque</td>
+                            <td class="value">245.70</td>
+                            <td>14:32:45.123</td>
+                        </tr>
+                        <tr>
+                            <td>Status</td>
+                            <td class="value">Running</td>
+                            <td>14:32:45.123</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Speed Chart -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="material-icons">show_chart</span>
+                    Speed
+                </div>
+                <select class="select-field">
+                    <option>Speed</option>
+                    <option>Temperature</option>
+                    <option>Voltage</option>
+                    <option>Power</option>
+                </select>
+            </div>
+            <div class="card-content chart-container">
+                <svg class="chart-svg" viewBox="0 0 400 200" preserveAspectRatio="none">
+                    <line class="chart-grid" x1="0" y1="50" x2="400" y2="50"/>
+                    <line class="chart-grid" x1="0" y1="100" x2="400" y2="100"/>
+                    <line class="chart-grid" x1="0" y1="150" x2="400" y2="150"/>
+                    <path class="chart-area" d="M0,180 Q50,160 100,140 T200,100 T300,80 T400,60 L400,200 L0,200 Z"/>
+                    <path class="chart-line" d="M0,180 Q50,160 100,140 T200,100 T300,80 T400,60"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Temperature Chart -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="material-icons">show_chart</span>
+                    Temperature
+                </div>
+                <select class="select-field">
+                    <option>Temperature</option>
+                    <option>Speed</option>
+                    <option>Voltage</option>
+                    <option>Power</option>
+                </select>
+            </div>
+            <div class="card-content chart-container">
+                <svg class="chart-svg" viewBox="0 0 400 200" preserveAspectRatio="none">
+                    <line class="chart-grid" x1="0" y1="50" x2="400" y2="50"/>
+                    <line class="chart-grid" x1="0" y1="100" x2="400" y2="100"/>
+                    <line class="chart-grid" x1="0" y1="150" x2="400" y2="150"/>
+                    <path class="chart-area" d="M0,120 Q50,100 100,130 T200,90 T300,110 T400,70 L400,200 L0,200 Z"/>
+                    <path class="chart-line" d="M0,120 Q50,100 100,130 T200,90 T300,110 T400,70"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Voltage Chart -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="material-icons">show_chart</span>
+                    Voltage
+                </div>
+                <select class="select-field">
+                    <option>Voltage</option>
+                    <option>Speed</option>
+                    <option>Temperature</option>
+                    <option>Power</option>
+                </select>
+            </div>
+            <div class="card-content chart-container">
+                <svg class="chart-svg" viewBox="0 0 400 200" preserveAspectRatio="none">
+                    <line class="chart-grid" x1="0" y1="50" x2="400" y2="50"/>
+                    <line class="chart-grid" x1="0" y1="100" x2="400" y2="100"/>
+                    <line class="chart-grid" x1="0" y1="150" x2="400" y2="150"/>
+                    <path class="chart-area" d="M0,80 Q50,85 100,75 T200,90 T300,85 T400,80 L400,200 L0,200 Z"/>
+                    <path class="chart-line" d="M0,80 Q50,85 100,75 T200,90 T300,85 T400,80"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Power Chart -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="material-icons">show_chart</span>
+                    Power
+                </div>
+                <select class="select-field">
+                    <option>Power</option>
+                    <option>Speed</option>
+                    <option>Temperature</option>
+                    <option>Voltage</option>
+                </select>
+            </div>
+            <div class="card-content chart-container">
+                <svg class="chart-svg" viewBox="0 0 400 200" preserveAspectRatio="none">
+                    <line class="chart-grid" x1="0" y1="50" x2="400" y2="50"/>
+                    <line class="chart-grid" x1="0" y1="100" x2="400" y2="100"/>
+                    <line class="chart-grid" x1="0" y1="150" x2="400" y2="150"/>
+                    <path class="chart-area" d="M0,150 Q50,130 100,120 T200,80 T300,100 T400,60 L400,200 L0,200 Z"/>
+                    <path class="chart-line" d="M0,150 Q50,130 100,120 T200,80 T300,100 T400,60"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
