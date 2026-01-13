@@ -7,19 +7,30 @@ Create
 - Angular Workspace (v21) (src\ReverseProxy.Workspace)
 - Angular Application (src\ReverseProxy.Workspace\projects\reverse-proxy)
     - Angular Material for all html components
+    - mobile first
     - Dark Theme
+    - rxjs for state management
+    - no ngrx
+    - no signals
+    - no subscribing in TypeScript classes
+    - design tokens for consistent styling and spacing
+    - BEM naming convention for Css class naming
     - Only Angular Theme colors are used
     - SignalR
     - charts Telemtry in a table tile - Angular Material
         - subscribes to telemetry
         - resizable
         - moveable
+        - mobile optimized view and full desktop view
     - graphs telemetry in charts (charts.js - smooth interpoilated)    
         - subscribes to telemetry
         - resizable
         - movable
+        - add / or remove tiles
+        - mobile optimized view and full desktop view
     - Dashboard (gridstack.js)
-        grid 10 x 30  
+        - grid 10 x 30  
+        - tiles stack on mobile
     - playwright tests for all behaviour (Http and Web Socket interface mocked out / faked for tests for tests)       
 - Worker .NET Library (src\ReverseProxy.Vehicle)
     - Subscribes to Commands (start, stop, go up, and 10 more commands)
