@@ -1,6 +1,6 @@
 # Reverse Proxy Telemetry Dashboard
 
-A real-time telemetry monitoring dashboard built with .NET 8, Angular 18, and SignalR. This solution demonstrates a complete vehicle telemetry system with live data streaming, command execution, and interactive visualizations.
+A real-time telemetry monitoring dashboard built with .NET 8, Angular 21, and SignalR. This solution demonstrates a complete vehicle telemetry system with live data streaming, command execution, and interactive visualizations.
 
 ## Architecture Overview
 
@@ -30,7 +30,7 @@ A real-time telemetry monitoring dashboard built with .NET 8, Angular 18, and Si
 | `ReverseProxy.Api` | REST API for sending commands and querying telemetry definitions | 5200 |
 | `ReverseProxy.ApiGateway` | YARP reverse proxy routing requests to backend services | 5000 |
 
-### Frontend (Angular 18)
+### Frontend (Angular 21)
 
 | Component | Description |
 |-----------|-------------|
@@ -99,8 +99,8 @@ The vehicle worker supports 20 commands:
 ### Prerequisites
 
 - .NET 8 SDK
-- Node.js 18+ and npm
-- Angular CLI 18
+- Node.js 20+ and npm
+- Angular CLI 21
 
 ### Running the Solution
 
@@ -221,7 +221,7 @@ npx playwright test
 ## Technologies
 
 - **.NET 8** - Backend services
-- **Angular 18** - Frontend framework
+- **Angular 21** - Frontend framework
 - **Angular Material** - UI components
 - **SignalR** - Real-time communication
 - **YARP** - Reverse proxy
