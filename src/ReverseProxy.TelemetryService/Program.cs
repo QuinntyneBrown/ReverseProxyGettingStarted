@@ -1,3 +1,4 @@
+using ReverseProxy.Shared.Messages;
 using ReverseProxy.TelemetryService.Hubs;
 using ReverseProxy.TelemetryService.Services;
 
