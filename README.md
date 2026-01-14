@@ -5,18 +5,33 @@ A real-time telemetry monitoring dashboard built with .NET 8, Angular 21, and Si
 ## Architecture Overview
 
 ```
-┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
-│   Angular App   │────▶│   API Gateway    │────▶│      API        │
-│   (Dashboard)   │     │   (YARP Proxy)   │     │   (Commands)    │
-└────────┬────────┘     └──────────────────┘     └─────────────────┘
-         │
-         │ SignalR
-         ▼
+┌─────────────────┐                              ┌─────────────────┐
+│   Angular App   │                              │      API        │
+│   (Dashboard)   │                              │   (Commands)    │
+└────────┬────────┘                              └────────▲────────┘
+         │                                                │
+         │ REST + SignalR (WebSocket)                     │
+         ▼                                                │
+┌──────────────────────────────────────────────────────────────────┐
+│                      API Gateway (YARP)                          │
+│                        Port 5000                                 │
+│  ┌────────────────┐  ┌────────────────┐  ┌────────────────────┐  │
+│  │ /api/* → :5200 │  │ /hubs/* → :5100│  │ /telemetry/* → :5100│ │
+│  └────────────────┘  └────────────────┘  └────────────────────┘  │
+└──────────────────────────────────────────────────────────────────┘
+                               │
+                               │ Proxied SignalR
+                               ▼
 ┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
 │   Telemetry     │◀────│   UDP Multicast  │◀────│    Vehicle      │
 │    Service      │     │   (Pub/Sub)      │     │    Worker       │
 └─────────────────┘     └──────────────────┘     └─────────────────┘
 ```
+
+All frontend traffic flows through the API Gateway on port 5000, which routes:
+- `/api/*` to the REST API (port 5200)
+- `/hubs/*` to the SignalR TelemetryService (port 5100) with WebSocket support
+- `/telemetry/*` to the TelemetryService REST endpoints (port 5100)
 
 ## Projects
 
@@ -207,16 +222,27 @@ npx playwright test
 
 ### API Gateway (`appsettings.json`)
 
+The API Gateway uses YARP to route all frontend traffic to backend services, including WebSocket connections for SignalR:
+
 ```json
 {
   "ReverseProxy": {
     "Routes": {
       "api-route": { "Path": "/api/{**catch-all}" },
-      "telemetry-route": { "Path": "/hubs/{**catch-all}" }
+      "telemetry-route": { "Path": "/hubs/{**catch-all}" },
+      "telemetry-api-route": { "Path": "/telemetry/{**catch-all}" }
+    },
+    "Clusters": {
+      "api-cluster": { "Address": "http://localhost:5200" },
+      "telemetry-cluster": { "Address": "http://localhost:5100" }
     }
   }
 }
 ```
+
+The frontend connects exclusively through the API Gateway (port 5000), which proxies:
+- REST API calls to the Api service
+- SignalR WebSocket connections to the TelemetryService
 
 ## Technologies
 

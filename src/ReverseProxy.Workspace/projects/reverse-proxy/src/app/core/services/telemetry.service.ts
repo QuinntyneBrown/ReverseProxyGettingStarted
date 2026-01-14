@@ -13,7 +13,7 @@ import {
 })
 export class TelemetryService implements OnDestroy {
   private hubConnection: signalR.HubConnection | null = null;
-  private readonly hubUrl = 'http://localhost:5100/hubs/telemetry';
+  private readonly hubUrl = 'http://localhost:5000/hubs/telemetry';
 
   private telemetrySubject = new Subject<TelemetryBatch>();
   private connectionStateSubject = new BehaviorSubject<signalR.HubConnectionState>(

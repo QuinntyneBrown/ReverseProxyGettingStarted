@@ -129,8 +129,11 @@ export class TelemetryChartComponent implements OnInit, AfterViewInit, OnDestroy
   ngAfterViewInit(): void {
     this.initChart();
     if (this.defaultTelemetry) {
-      this.selectedTelemetry = this.defaultTelemetry;
-      this.onTelemetryChange();
+      // Use setTimeout to avoid ExpressionChangedAfterItHasBeenCheckedError
+      setTimeout(() => {
+        this.selectedTelemetry = this.defaultTelemetry!;
+        this.onTelemetryChange();
+      });
     }
   }
 
